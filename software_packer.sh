@@ -6,14 +6,14 @@
 
 
 
-set -x
+#set -x
 set -e
 
 # make the bio modules available
 module load bioinfo-tools
 
 # init packing list
-package_list="/usr/local/Modules /sw/mf/ "
+package_list="/usr/local/Modules /usr/share/Modules /usr/share/lmod /etc/lmodrc.lua /sw/mf/ "
 
 # process each package
 for module in $@
