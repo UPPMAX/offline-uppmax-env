@@ -1,9 +1,6 @@
 FROM centos:7
 
 
-# define volumes
-#VOLUME /mnt/data /mnt/img
-
 # install epel repo
 RUN yum install -y epel-release
 
@@ -24,17 +21,41 @@ RUN mkdir -p /sw/links/proj /crex /domus/h1 ; \
     ln -s /sw/links/proj /proj
 
 
-# copy the software package into the container
-COPY ./software_package.tar.gz /
+
+ENV MODULEPATH_ROOT /sw/mf/rackham
+ENV MODULEPATH /sw/mf/rackham/applications:/sw/mf/rackham/build-tools:/sw/mf/rackham/compilers:/sw/mf/rackham/data:/sw/mf/rackham/environment:/sw/mf/rackham/libraries:/sw/mf/rackham/parallel
+ENV LMOD_CACHED_LOADS yes
+ENV CLUSTER rackham
+ENV MODULEPATH_ROOT /sw/mf/rackham
+ENV MODULES_CLUSTER rackham
+ENV modules_shell bash
+ENV USER uppmax
+
+# set user things
+RUN adduser uppmax
+RUN chown uppmax /proj
+USER uppmax
+WORKDIR /home/uppmax
+RUN echo -e "\
+alias l='ls -lh'\n\
+alias ll='ls -lah'\n\
+module load uppmax\n\
+" >> /home/uppmax/.bashrc
+
+# define volumes
+VOLUME ["/proj"]
+
+
+
+# copy the software and data package into the container
+COPY software_package.tar.gz /
+COPY data_package.tar.gz /
 
 # unpack the software package
 RUN tar -xzvf /software_package.tar.gz
 
+# unpack the data package
+RUN tar -xzvf /data_package.tar.gz
 
-
-
-
-
-
-
-
+# remove problematic modules
+RUN rm -rf /sw/mf/rackham/compilers/gcc/ /sw/mf/rackham/compilers/pgi
