@@ -36,7 +36,7 @@ do
     module_version=${mf_path##*/} # https://stackoverflow.com/questions/22727107/how-to-find-the-last-field-using-cut
 
     # get the module install location
-    module_path=$(cat $mf_path | grep set | grep "[[:space:]]modroot[[:space:]]" | tr -s "[:blank:]" " " | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' uuuu| cut -d " " -f 3) # break out the mf file path
+    module_path=$(cat $mf_path | grep set | grep "[[:space:]]modroot[[:space:]]" | tr -s "[:blank:]" " " | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | cut -d " " -f 3) # break out the mf file path
     
     # remove any lua environmet variable fetching
     if [[ $module_path == *'$env('* ]] 
