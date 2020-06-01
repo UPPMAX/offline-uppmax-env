@@ -69,4 +69,4 @@ echo "Compressing: tar --ignore-failed-read -chvzf software_package.tar.gz $pack
 # exit
 
 # package the requested modules, skipping any unreadable files
-tar --ignore-failed-read -chvzf software_package.tar.gz $package_list
+tar --ignore-failed-read -chvzf package.software.tar.gz $package_list
