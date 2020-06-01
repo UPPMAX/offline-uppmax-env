@@ -23,7 +23,7 @@ The base image will just have the OS and packages of UPPMAX, and the `uppmax` an
 bash software_packer.sh bwa star R GATK
 ```
 
-This will package everything needed to load these modules into a file called `software.package.tar.gz`.  Download this file to your computer, put it in the `packages` folder and build the Dockerfile in that folder (replace `repo/name:version` with whatever you want to name it on Dockerhub, or remove it to have it untagged).
+This will package everything needed to load these modules into a file called `software.package.tar.gz`.  Download this file to your computer, put it in the `packages` folder and build the Dockerfile in that folder (replace `repo/name:version` with whatever you want to name it on Dockerhub, or remove it to have it untagged). The dockerfile will copy all files in `packages/` and unzip all files named `*.package.tar.gz`, so feel free to put additional files there following this naming pattern.
 
 ```bash
 # run locally
@@ -32,7 +32,7 @@ docker build -t repo/name:version .
 
 
 ### Building your own base image
-If the base image on Dockerhub is too old for your liking you can rebuild it yourself. Follow the same steps as above, but put the `software.package.tar.gz` you created on UPPMAX in the `base/packages` folder instead. Then build the Dockerfile in the `base` folder.
+If the base image on Dockerhub is too old for your liking you can rebuild it yourself. Follow the same steps as above, but put the `software.package.tar.gz` you created on UPPMAX in the `base/packages` folder instead. The dockerfile will copy all files in `packages/` and unzip all files named `*.package.tar.gz`, so feel free to put additional files there following this naming pattern. Then build the Dockerfile in the `base` folder.
 
 ```bash
 cd base
@@ -61,10 +61,23 @@ uppmax/offline-uppmax-env:latest
 
 ```
 
+After the container is running it should be just like working on uppmax. `module load` should behave the same way and all modules you packed with `software_packer.sh` should be available.
+
 **Singularity**
 ```bash
 todo
 ```
+
+# Troubleshooting
+
+### Missing shared libraries
+Unfortunately I could not find an easy way to automatically pull all the shared libraries needed by programs. I had a problem with STAR, that it needed a newer version of GCC. I could get around it by running `ldd $(which star)` on uppmax and see that the file uses was `/sw/comp/gcc/8.3.0_rackham/lib64/libstdc++.so.6`. I put this file in a tar file,
+
+```bash
+tar -chzvf libs.package.tar.gz /sw/comp/gcc/8.3.0_rackham/lib64/libstdc++.so.6  # note the -h option, will dereference symbolic links
+```
+
+and put the `libs.package.tar.gz` file in the `packages` folder, build the image, and it worked after that.
 
 
 # Todos
