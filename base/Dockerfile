@@ -31,14 +31,11 @@ ENV MODULES_CLUSTER rackham
 ENV modules_shell bash
 ENV USER uppmax
 
-# copy the software and data package into the container
-COPY software_package.tar.gz /
+# copy the package(s) into the container
+COPY packages/ /
 
 # unpack the software package
-RUN tar -xzvf /software_package.tar.gz
-
-# remove problematic modules
-RUN rm -rf /sw/mf/rackham/compilers/gcc/ /sw/mf/rackham/compilers/pgi
+RUN for f in *.package.tar.gz; do tar xzvf "$f"; done
 
 # set user things
 RUN adduser uppmax

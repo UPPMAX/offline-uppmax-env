@@ -1,3 +1,2 @@
-software_package.tar.gz
-data_package.tar.gz
+*.package.tar.gz
 *.swp
