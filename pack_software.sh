@@ -6,14 +6,14 @@
 
 
 
-set -x
+#set -x
 set -e
 
 # make the bio modules available
 module load bioinfo-tools
 
 # init packing list
-package_list="/usr/local/Modules /usr/share/Modules /usr/share/lmod /etc/lmodrc.lua /sw/mf/rackham/environment/uppmax /sw/mf/rackham/environment/bioinfo-tools "
+package_list="/usr/local/Modules /usr/share/Modules /usr/share/lmod /etc/lmodrc.lua /sw/mf/rackham/environment/uppmax /sw/mf/rackham/environment/bioinfo-tools /sw/mf/common/environment/uppmax /sw/mf/common/environment/bioinfo-tools"
 
 # process each package
 for module in $@
@@ -58,7 +58,7 @@ do
 done
 
 # status message
-echo "Compressing modules: $package_list"
+echo "Compressing: tar --ignore-failed-read -cvzf software_package.tar.gz $package_list"
 
 # exit
 
