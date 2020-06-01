@@ -1,4 +1,4 @@
-# mini-uppmax
+# offline-uppmax-env
 A container that has the same operating system, same packages installed, and a copy of the module system (not the actual software though) at UPPMAX. The script `software_packer.sh` can be run at UPPMAX to create a tarball of the software you wish to include in container at build time. If any data needs to be accessed from inside the container it can be mounted at runtime.
 
 **What you get**
