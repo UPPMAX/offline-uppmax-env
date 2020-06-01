@@ -1,6 +1,31 @@
 # offline-uppmax-env
 A container that has the same operating system, same packages installed, and a copy of the module system (not the actual software though) at UPPMAX. The script `software_packer.sh` can be run at UPPMAX to create a tarball of the software you wish to include in container at build time. If any data needs to be accessed from inside the container it can be mounted at runtime.
 
+# TLDR
+```bash
+## ON UPPMAX
+# package the software you want to have in your image
+git clone https://github.com/UPPMAX/offline-uppmax-env.git
+cd offline-uppmax-env
+bash software_packer.sh bwa star samtools
+
+## ON LOCAL COMPUTER
+git clone https://github.com/UPPMAX/offline-uppmax-env.git
+cd offline-uppmax-env
+
+# download the created software.package.tar.gz to the package/ folder
+
+# build the image
+docker build .
+
+# start the container
+docker run \
+-v offline-uppmax-env-proj:/proj \
+-v /any/host/data/you/want/access/to:/path/inside/container \
+-it \
+uppmax/offline-uppmax-env:latest
+```
+
 **What you get**
 * CentOS 7
 * All yum packages installed at UPPMAX
