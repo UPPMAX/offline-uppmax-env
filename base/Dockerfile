@@ -35,7 +35,7 @@ ENV USER uppmax
 COPY packages/ /
 
 # unpack the software package
-RUN for f in *.package.tar.gz; do tar xzvf "$f"; done
+RUN for f in *.package.tar.gz; do tar xzvf "$f" || echo "No packages to unpack, continuing." ; rm -f "$f"; done
 
 # set user things
 RUN adduser uppmax

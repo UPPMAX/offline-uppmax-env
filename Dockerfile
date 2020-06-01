@@ -8,7 +8,7 @@ COPY packages/ /
 # unpack the package(s)
 WORKDIR /
 USER root
-RUN for f in *.package.tar.gz; do tar xzvf "$f"; done
+RUN for f in *.package.tar.gz; do tar xzvf "$f" || echo "No packages to unpack, continuing." ; rm -f "$f"; done
 
 # remove problematic modules
 #RUN rm -rf /sw/mf/rackham/compilers/gcc/ /sw/mf/rackham/compilers/pgi
