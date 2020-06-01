@@ -6,14 +6,14 @@
 
 
 
-#set -x
+set -x
 set -e
 
 # make the bio modules available
 module load bioinfo-tools
 
 # init packing list
-package_list="/usr/local/Modules /usr/share/Modules /usr/share/lmod /etc/lmodrc.lua /sw/mf/rackham/environment/uppmax /sw/mf/rackham/environment/bioinfo-tools /sw/mf/common/environment/uppmax /sw/mf/common/environment/bioinfo-tools"
+package_list="/usr/local/Modules /usr/share/Modules /usr/share/lmod /etc/lmodrc.lua /sw/mf/rackham/environment/uppmax /sw/mf/rackham/environment/bioinfo-tools /sw/mf/common/includes/ "
 
 # process each package
 for module in $@
@@ -36,7 +36,7 @@ do
     module_version=${mf_path##*/} # https://stackoverflow.com/questions/22727107/how-to-find-the-last-field-using-cut
 
     # get the module install location
-    module_path=$(cat $mf_path | grep set | grep "[[:space:]]modroot[[:space:]]" | tr -s "[:blank:]" " " | cut -d " " -f 3) # break out the mf file path
+    module_path=$(cat $mf_path | grep set | grep "[[:space:]]modroot[[:space:]]" | tr -s "[:blank:]" " " | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' uuuu| cut -d " " -f 3) # break out the mf file path
     
     # remove any lua environmet variable fetching
     if [[ $module_path == *'$env('* ]] 
@@ -52,15 +52,21 @@ do
     # copy the common folders version of the module file if it exists
     common_mf=/sw/mf/common/$(echo $mf_path | cut -d "/" -f 5-)
 
+#    # see if any libraries are explicitly stated in the module file
+#    while read -r line ; do
+#        echo "Processing $line"
+#        # your code goes here
+#    done < <(cat $mf_path | grep LD_ | )
+
     # save locations for packing
     package_list+="$mf_path $common_mf $module_path "
 
 done
 
 # status message
-echo "Compressing: tar --ignore-failed-read -cvzf software_package.tar.gz $package_list"
+echo "Compressing: tar --ignore-failed-read -chvzf software_package.tar.gz $package_list"
 
 # exit
 
 # package the requested modules, skipping any unreadable files
-tar --ignore-failed-read -cvzf software_package.tar.gz $package_list
+tar --ignore-failed-read -chvzf software_package.tar.gz $package_list
