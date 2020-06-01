@@ -31,6 +31,15 @@ ENV MODULES_CLUSTER rackham
 ENV modules_shell bash
 ENV USER uppmax
 
+# copy the software and data package into the container
+COPY software_package.tar.gz /
+
+# unpack the software package
+RUN tar -xzvf /software_package.tar.gz
+
+# remove problematic modules
+RUN rm -rf /sw/mf/rackham/compilers/gcc/ /sw/mf/rackham/compilers/pgi
+
 # set user things
 RUN adduser uppmax
 RUN chown uppmax /proj
@@ -45,17 +54,3 @@ module load uppmax\n\
 # define volumes
 VOLUME ["/proj"]
 
-
-
-# copy the software and data package into the container
-COPY software_package.tar.gz /
-COPY data_package.tar.gz /
-
-# unpack the software package
-RUN tar -xzvf /software_package.tar.gz
-
-# unpack the data package
-RUN tar -xzvf /data_package.tar.gz
-
-# remove problematic modules
-RUN rm -rf /sw/mf/rackham/compilers/gcc/ /sw/mf/rackham/compilers/pgi
