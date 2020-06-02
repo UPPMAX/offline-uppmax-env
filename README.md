@@ -15,15 +15,20 @@ cd offline-uppmax-env
 
 # download the created software.package.tar.gz to the package/ folder
 
-# build the image
+# using Docker
 docker build .
-
-# start the container
 docker run \
 -v offline-uppmax-env-proj:/proj \
 -v /any/host/data/you/want/access/to:/path/inside/container \
 -it \
 uppmax/offline-uppmax-env:latest
+
+# using singularity
+singularity build offline-uppmax-env.sif Singularity
+singularity shell \
+-b /host/path/to/persistent/projfolder:/proj \
+-b /any/host/data/you/want/access/to:/path/inside/container \
+offline-uppmax-env.sif
 ```
 
 **What you get**
@@ -89,8 +94,15 @@ uppmax/offline-uppmax-env:latest
 After the container is running it should be just like working on uppmax. `module load` should behave the same way and all modules you packed with `software_packer.sh` should be available.
 
 **Singularity**
+To get the module system to work in Singularity you have to build the Singularity file as sudo and everything should work. Package the software you need on UPPMAX like in the Docker approach, put the downloaded tarball in the `packages/` folder just like with Docker, and then build it with Singularity.
+
+Just building from Dockerhub (uppmax/offline-uppmax-env:latest) will give you a container with only the `uppmax` and `bioinfo-tools` in it, and the `module` command will not work since it is a function that is not inherited properly when being converted by Singularity. You can get around this by manually typing `source /etc/bashrc.module_env` every time the container starts.
+
+If you build your own Docker image with the software your want, push it to Dockerhub, and convert it to Singularity, you will still have the problem of the `module` command not working. The solution is the same, manually type `source /etc/bashrc.module_env` when the container starts and it should start working. Building the Singularity file instead will not have this problem.
+
 ```bash
-todo
+# 
+
 ```
 
 # Troubleshooting
@@ -107,4 +119,3 @@ and put the `libs.package.tar.gz` file in the `packages` folder, build the image
 
 # Todos
 * Test if it works.
-* Make a singularity equivalent. Weird that it did not just work to convert it.
