@@ -62,7 +62,18 @@ docker build -t repo/name:version .
 
 
 ### Building your own base image
-If the base image on Dockerhub is too old for your liking you can rebuild it yourself. Follow the same steps as above, but put the `software.package.tar.gz` you created on UPPMAX in the `base/packages` folder instead. The dockerfile will copy all files in `packages/` and unzip all files named `*.package.tar.gz`, so feel free to put additional files there following this naming pattern. Then build the Dockerfile in the `base` folder.
+If the base image on Dockerhub is too old for your liking you can rebuild it yourself. Follow the same steps as above, but put the `software.package.tar.gz` you created on UPPMAX in the `base/packages` folder instead. The dockerfile will copy all files in `packages/` and unzip all files named `*.package.tar.gz`, so feel free to put additional files there following this naming pattern. 
+
+To update the list of packages installed by `yum`, run the following line on UPPMAX:
+
+```bash
+# list all installed packages and print the all on a single line
+yum list installed | cut -f 1 -d " " | cut -f 1 -d "." | sort | awk -vORS=' ' '{ print $1 }'
+```
+
+and replace the list of packages in the `Dockerfile`.
+
+Then build the Dockerfile in the `base` folder.
 
 ```bash
 cd base

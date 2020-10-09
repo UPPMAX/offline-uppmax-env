@@ -15,8 +15,32 @@ module load bioinfo-tools
 # init packing list
 package_list="/usr/local/Modules /usr/share/Modules /usr/share/lmod /etc/lmodrc.lua /sw/mf/rackham/environment/uppmax /sw/mf/rackham/environment/bioinfo-tools /sw/mf/common/includes/ "
 
+# find module dependencies
+mods_to_check=$@
+mods_to_package=""
+
+# keep checking as long as there are modules to check
+while (( ${#mods_to_check[@]} ))
+do
+	# pop the first element from the array
+	mod=${mods_to_check[0]}
+	mods_to_check=( "${mods_to_check[@]:1}" )
+
+	for dep_mod in $(module show $mod 2>&1 | grep "load(" | sed "s/load(\"//" | sed "s/..$//")
+	do
+		mods_to_check+=(dep_mod)
+
+	done
+
+	mods_to_package+="$mod "
+
+done
+
+echo $mods_to_package
+exit
+
 # process each package
-for module in $@
+for module in $mods_to_package
 do
 
 
