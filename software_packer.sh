@@ -28,7 +28,7 @@ do
 
 	for dep_mod in $(module show $mod 2>&1 | grep "load(" | sed "s/load(\"//" | sed "s/..$//")
 	do
-		mods_to_check+=(dep_mod)
+		mods_to_check+=($dep_mod)
 
 	done
 
@@ -36,16 +36,13 @@ do
 
 done
 
-echo $mods_to_package
-exit
-
-# process each package
-for module in $mods_to_package
+# process each unique package
+for module in $(echo -e "${mods_to_package// /\\n}" | sort -u)
 do
 
 
-    # skip bioinfo-tools
-    if [[ $module ==  "bioinfo-tools" ]]
+    # skip problematic modules
+    if [[ "$module" ==  "bioinfo-tools" ]] || [[ "$module" == "gcc"* ]] || [[ "$module" == "python"* ]]
     then
         continue
     fi
