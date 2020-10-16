@@ -19,20 +19,13 @@ RUN yum -y install libxml2-devel openssl-devel libcurl-devel udunits2-devel open
 RUN export R_VERSION=4.0.0 ; curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rpm ; yum -y install R-${R_VERSION}-1-1.x86_64.rpm ; ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R ; ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 # install R packages (OPTIONAL. Load the same R version as you have in your software package)
-RUN R -e "install.packages('BiocManager', dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages(c('BiocManager','ggplot2'), dependencies='Depends', repos='http://cran.rstudio.com/')"
 RUN R -e "BiocManager::install(version = '3.11')"
-RUN R -e "BiocManager::install(c('DESeq2'))"
-RUN R -e "BiocManager::install(c('edgeR'))"
-RUN R -e "BiocManager::install(c('goseq'))"
-RUN R -e "BiocManager::install(c('GO.db'))"
-RUN R -e "BiocManager::install(c('reactome.db'))"
-RUN R -e "BiocManager::install(c('org.Mm.eg.db'))"
-RUN R -e "BiocManager::install(c('pheatmap'))"
-RUN yum -y install gdal gdal-devel
-RUN R -e "install.packages('ggplot2',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "BiocManager::install(c('DESeq2', 'edgeR', 'goseq', 'GO.db', 'reactome.db', 'org.Mm.eg.db', 'pheatmap'))"
 
-COPY packages/ /
-RUN for f in *.package.tar.gz; do tar xzvf "$f" || echo "No packages to unpack, continuing.." ; rm -f "$f"; done
+# add a init script for sourcing that will fix PS1 and module environment when running through Singularity
+RUN echo "PS1='\[\033[01;34m\][\t] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@fake-uppmax\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] '" > /uppmax_init ; echo "source /etc/bashrc.module_env" >> /uppmax_init
+
 
 # reset workdir and user
 WORKDIR /home/uppmax

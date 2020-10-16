@@ -14,11 +14,12 @@ RUN yum update -y
 RUN yum clean all
 
 # create uppmax folder structure
-RUN mkdir -p /sw/links/proj /crex /domus/h1 ; \
+RUN mkdir -p /sw/links/proj /crex/course_data /domus/h1 ; \
     ln -s / /crex1 ; \
     ln -s / /crex2 ; \
     ln -s /domus/h1 /home ; \
-    ln -s /sw/links/proj /proj
+    ln -s /sw/links/proj /proj ; \
+    ln -s /crex/course_data /sw/courses
 
 
 
