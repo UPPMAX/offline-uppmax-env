@@ -1,3 +1,5 @@
 *.package.tar.gz
 *.swp
+.*.sw*
 *.sif
+sandbox/

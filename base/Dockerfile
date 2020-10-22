@@ -26,7 +26,7 @@ RUN mkdir -p /sw/links/proj /crex/course_data /domus/h1 ; \
 ENV USER uppmax
 
 # copy the package(s) into the container
-COPY packages/ /
+COPY packages/*.package.tar.gz /
 
 # unpack the software package
 RUN for f in *.package.tar.gz; do tar xzvf "$f" || echo "No packages to unpack, continuing." ; rm -f "$f"; done
@@ -50,14 +50,14 @@ module ()  {      eval $($LMOD_CMD bash "$@") && eval $(${LMOD_SETTARG_CMD:-:} -
 export -f module\n\
 \n\
 module load uppmax\n\
-' >> /etc/bashrc.module_env && \
-echo "source /etc/bashrc.module_env" >> /etc/bashrc
+' >> /uppmax_init 
 
 # set user things
 RUN adduser uppmax
 RUN chown uppmax /proj
 USER uppmax
 WORKDIR /home/uppmax
+RUN echo "source /uppmax_init" >> /home/uppmax/.bashrc
 
 # define volumes
 VOLUME ["/proj"]
