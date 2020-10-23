@@ -33,17 +33,18 @@ RUN for f in *.package.tar.gz; do tar xzvf "$f" || echo "No packages to unpack, 
 
 # put env stuff in /etc/bashrc to make the singularity conversion work
 RUN echo -e '\
-alias l="ls -lh"\n\
-alias ll="ls -lah"\n\
+alias l="ls -lh --color=auto"\n\
+alias ll="ls -lah --color=auto"\n\
 \n\
 # module environment\n\
-export MODULEPATH_ROOT=/sw/mf/rackham\n\
-export MODULEPATH=/sw/mf/rackham/applications:/sw/mf/rackham/build-tools:/sw/mf/rackham/compilers:/sw/mf/rackham/data:/sw/mf/rackham/environment:/sw/mf/rackham/libraries:/sw/mf/rackham/parallel\n\
+export CLUSTER=rackham\n\
 export LMOD_CACHED_LOADS=yes\n\
 export LMOD_CMD=/usr/share/lmod/lmod/libexec/lmod\n\
-export CLUSTER=rackham\n\
+export MODULEPATH=/sw/mf/rackham/applications:/sw/mf/rackham/build-tools:/sw/mf/rackham/compilers:/sw/mf/rackham/data:/sw/mf/rackham/environment:/sw/mf/rackham/libraries:/sw/mf/rackham/parallel\n\
+export MODULEPATH_ROOT=/sw/mf/rackham\n\
 export MODULEPATH_ROOT=/sw/mf/rackham\n\
 export MODULES_CLUSTER=rackham\n\
+export MODULES_MACH=x86_64\n\
 export modules_shell=bash\n\
 \n\
 module ()  {      eval $($LMOD_CMD bash "$@") && eval $(${LMOD_SETTARG_CMD:-:} -s sh); }\n\
