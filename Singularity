@@ -34,6 +34,39 @@ From: uppmax/offline-uppmax-env:latest
     mkdir -p /sw/data/uppnex/reference/Homo_sapiens/hg19/concat_rm/
     echo -e ">Homo_sapiens.GRCh37.57.dna_rm.concat.fa\nATCG" > /sw/data/uppnex/reference/Homo_sapiens/hg19/concat_rm/Homo_sapiens.GRCh37.57.dna_rm.concat.fa
 
+    # create a R_packages file manually..
+    mkdir -p /sw/mf/rackham/applications/R_packages/
+    echo '#%Module1.0#####################################################################
+##
+## R_packages modulefile
+##
+
+source /sw/mf/common/includes/functions.tcl
+getCluster
+
+# for Tcl script use only
+#
+
+set components [ file split [ module-info name ] ]
+set version [ lindex $components 1 ]
+
+set	modroot		/sw/apps/R_packages/$version/$Cluster
+
+module-whatis	"Loads R_packages environment for R/$version"
+
+#Log loading to syslog
+logToSyslog 
+
+# Only one version at a time
+if { [ is-loaded R/$version ] == 0 } {
+    conflict R
+}
+module load R/$version
+
+# this module uses R_LIBS_SITE so user can freely set R_LIBS_USER
+prepend-path   R_LIBS_SITE      $modroot
+' > /sw/mf/rackham/applications/R_packages/4.0.0
+
     # add a init script for sourcing that will fix PS1 and module environment when running through Singularity
     echo "PS1='\[\033[01;34m\][\t] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@offline-uppmax\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] '" >> /.singularity.d/env/99-module_env.sh ;
     cat /uppmax_init >> /.singularity.d/env/99-module_env.sh
