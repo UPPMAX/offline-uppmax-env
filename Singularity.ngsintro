@@ -27,8 +27,9 @@ From: uppmax/offline-uppmax-env:latest
     export F77=gfortran
 
     # install R packages (OPTIONAL. Load the same R version as you have in your software package)
-    /sw/apps/R/x86_64/4.0.0/rackham/bin/R -e ".libPaths(c('/sw/apps/R/x86_64/4.0.0/rackham/lib64/R/library', .libPaths())) ; install.packages(c('BiocManager','remotes','dplyr','pheatmap','stringr','tidyr','ggplot2'), dependencies=TRUE, repos='http://cran.rstudio.com/', Ncpus=8, lib='/sw/apps/R/x86_64/4.0.0/rackham/lib64/R/library')"
-    /sw/apps/R/x86_64/4.0.0/rackham/bin/R -e ".libPaths(c('/sw/apps/R/x86_64/4.0.0/rackham/lib64/R/library', .libPaths())) ; BiocManager::install(c('DESeq2','edgeR','goseq','GO.db','org.Mm.eg.db','reactome.db'))"
+    mkdir -p /sw/apps/R_packages/4.0.0/rackham/
+    /sw/apps/R/x86_64/4.0.0/rackham/bin/R -e ".libPaths(c('/sw/apps/R_packages/4.0.0/rackham/', .libPaths())) ; install.packages(c('BiocManager','remotes','dplyr','pheatmap','stringr','tidyr','ggplot2'), dependencies=TRUE, repos='http://cran.rstudio.com/', Ncpus=8, lib='/sw/apps/R_packages/4.0.0/rackham/')"
+    /sw/apps/R/x86_64/4.0.0/rackham/bin/R -e ".libPaths(c('/sw/apps/R_packages/4.0.0/rackham/', .libPaths())) ; BiocManager::install(c('DESeq2','edgeR','goseq','GO.db','org.Mm.eg.db','reactome.db'), Ncpus=8, lib='/sw/apps/R_packages/4.0.0/rackham/')"
 
     # create a dummy reference genome for ngsintro course
     mkdir -p /sw/data/uppnex/reference/Homo_sapiens/hg19/concat_rm/
